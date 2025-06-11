@@ -1,9 +1,7 @@
 // app/layout.tsx
 import "./main.css";
 import type { Metadata } from "next";
-import { Space_Grotesk, Montserrat } from "next/font/google";
-import { Inter } from "next/font/google";
-import { Outfit } from "next/font/google";
+import { Ubuntu } from "next/font/google";
 import "./globals.css";
 import { ConfigProvider } from "@/context/ConfigContext";
 import CursorProvider from "@/components/CursorProvider";
@@ -33,27 +31,11 @@ const loadingConfig = localConfig.loadingScreen || {
   },
 };
 
-const spaceGrotesk = Space_Grotesk({
+const ubuntu = Ubuntu({
   subsets: ["latin"],
-  variable: "--font-space-grotesk",
-  display: "swap",
-});
-
-const montserrat = Montserrat({
-  subsets: ["latin"],
-  variable: "--font-montserrat",
-  display: "swap",
-});
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
-});
-
-const outfit = Outfit({
-  subsets: ["latin"],
-  variable: "--font-outfit",
+  weight: ["300", "400", "500", "700"],
+  style: ["normal", "italic"],
+  variable: "--font-ubuntu",
   display: "swap",
 });
 
@@ -112,176 +94,151 @@ export default function RootLayout({
   const isLoadingEnabled = loadingConfig.enabled !== false;
 
   // Define class names for HTML element (without server-side mobile detection)
-  const htmlClasses = `${spaceGrotesk.variable} ${montserrat.variable} ${inter.variable} ${outfit.variable} scroll-smooth no-js`;
+  const htmlClasses = `${ubuntu.variable} scroll-smooth no-js`;
 
   return (
     <html lang="en" className={htmlClasses} suppressHydrationWarning>
       <head>
-        {/* Immediate CSS variables to prevent flash of wrong colors */}
+        {/* Critical inline CSS to prevent FOUC */}
         <style
           dangerouslySetInnerHTML={{
             __html: `
+            /* Critical CSS Variables - Available immediately */
             :root {
-              --loading-bg-color: ${loadingConfig.backgroundColor || "#FFFFFF"};
-              --loading-fade-duration: ${
-                loadingConfig.timing?.fadeOutDuration || 600
-              }ms;
-              --spinner-size: ${loadingConfig.spinner?.size || 60}px;
-              --spinner-thickness: ${loadingConfig.spinner?.thickness || 4}px;
-              --spinner-color: ${loadingConfig.spinner?.color || "#1d4ed8"};
-              --spinner-display: ${
-                loadingConfig.spinner?.enabled !== false ? "block" : "none"
+              --theme-color: ${config.themeColor || "#e68bbe"};
+              --theme-color-light: ${config.themeColor || "#e68bbe"}22;
+              --info-bar-color: ${config.infoBar?.backgroundColor || "#e68bbe"};
+              --nav-text-color: ${config.navBar?.textColor || "#e68bbe"};
+              --nav-bg-color: ${config.navBar?.backgroundColor || "#ffffff"};
+              --hero-gradient-top: ${
+                config.pages?.Home?.heroGradientTop || "#f4b8da"
               };
-              --logo-width: ${loadingConfig.logoWidth || 280}px;
-              --theme-color: ${config.themeColor || "#1e40af"};
-              --theme-color-light: ${config.themeColor || "#1e40af"}22;
+              --hero-gradient-bottom: ${
+                config.pages?.Home?.heroGradientBottom || "#ffffff"
+              };
+            }
+            
+            /* Critical layout styles to prevent layout shifts */
+            * {
+              box-sizing: border-box;
+            }
+            
+            html, body {
+              margin: 0;
+              padding: 0;
+              font-family: 'Ubuntu', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+              background: linear-gradient(to bottom, var(--hero-gradient-top), var(--hero-gradient-bottom));
+              min-height: 100vh;
+              font-display: swap;
+            }
+            
+            *, *::before, *::after {
+              font-family: 'Ubuntu', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            }
+            
+            /* Info bar critical styles */
+            .info-bar {
+              background-color: var(--info-bar-color);
+              color: white;
+              padding: 0.5rem 0;
+              font-size: 0.875rem;
+            }
+            
+            /* Navigation critical styles */
+            .nav-bar {
+              background-color: var(--nav-bg-color);
+              border-bottom: 1px solid #f3f4f6;
+              position: sticky;
+              top: 0;
+              z-index: 50;
+            }
+            
+            /* Prevent font flash */
+            .font-ubuntu {
+              font-family: 'Ubuntu', system-ui, -apple-system, sans-serif;
             }
           `,
           }}
         />
+
+        {/* Critical font loading to prevent font flash */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin=""
+        />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap"
+        />
+
+        {/* Firefox FOUC fix - dummy script */}
+        <script dangerouslySetInnerHTML={{ __html: "0" }} />
       </head>
-      <body className="antialiased bg-white font-sans" suppressHydrationWarning>
-        {/* Loading overlay */}
-        {isLoadingEnabled && (
-          <div id="loading-overlay" className="loading-overlay">
-            <div className="logo-container">
-              <img
-                src={`/images/${loadingConfig.logoImage}`}
-                alt={loadingConfig.logoAlt}
-              />
-            </div>
-            <div className="spinner"></div>
-          </div>
-        )}
+      <body
+        className={`antialiased bg-white ${ubuntu.variable} font-ubuntu`}
+        suppressHydrationWarning
+      >
+        {/* Site content - no loading overlay needed */}
+        <ConfigProvider>
+          <CursorProvider>
+            <ClientConfigApplier />
+            <ClientStylesApplier
+              config={config}
+              loadingConfig={loadingConfig}
+            />
+            {children}
+          </CursorProvider>
+        </ConfigProvider>
 
-        {/* Actual site content */}
-        <div className="site-content">
-          <ConfigProvider>
-            <CursorProvider>
-              <ClientConfigApplier />
-              <ClientStylesApplier
-                config={config}
-                loadingConfig={loadingConfig}
-              />
-              {children}
-            </CursorProvider>
-          </ConfigProvider>
-        </div>
-
-        {/* Script for loading overlay and scroll position preservation */}
+        {/* Simple scroll position preservation */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
-          try {
-            if (typeof window !== 'undefined') {
-              // Scroll position preservation
-              const SCROLL_KEY = 'davis_tree_scroll_position';
-              
-              // Save scroll position before page unloads
-              function saveScrollPosition() {
+          (function() {
+            // Scroll position preservation
+            const SCROLL_KEY = 'nail_salon_scroll_position';
+            
+            // Save scroll position before page unloads
+            function saveScrollPosition() {
+              try {
                 const scrollY = window.scrollY || window.pageYOffset;
                 const scrollX = window.scrollX || window.pageXOffset;
                 localStorage.setItem(SCROLL_KEY, JSON.stringify({ x: scrollX, y: scrollY }));
+              } catch (e) {
+                // Ignore localStorage errors
               }
-              
-              // Restore scroll position after page loads
-              function restoreScrollPosition() {
-                try {
-                  const savedPosition = localStorage.getItem(SCROLL_KEY);
-                  if (savedPosition) {
-                    const position = JSON.parse(savedPosition);
-                    // Use requestAnimationFrame to ensure DOM is ready
-                    requestAnimationFrame(() => {
-                      window.scrollTo(position.x, position.y);
-                    });
-                  }
-                } catch (e) {
-                  console.warn('Could not restore scroll position:', e);
+            }
+            
+            // Restore scroll position
+            function restoreScrollPosition() {
+              try {
+                const savedPosition = localStorage.getItem(SCROLL_KEY);
+                if (savedPosition) {
+                  const position = JSON.parse(savedPosition);
+                  requestAnimationFrame(() => {
+                    window.scrollTo(position.x, position.y);
+                  });
                 }
+              } catch (e) {
+                // Ignore errors
               }
-              
-              // Handle the loading overlay
-              function hideLoadingOverlay() {
-                const minimumDisplayTime = ${loadingConfig.timing.minimumDisplayTime};
-                const fadeOutDuration = ${loadingConfig.timing.fadeOutDuration};
-                const startTime = performance.now();
-                
-                function doHide() {
-                  const elapsedTime = performance.now() - startTime;
-                  const remainingTime = Math.max(0, minimumDisplayTime - elapsedTime);
-                  
-                  setTimeout(() => {
-                    const overlay = document.getElementById('loading-overlay');
-                    if (overlay) {
-                      overlay.classList.add('hidden');
-                      setTimeout(() => {
-                        overlay.style.display = 'none';
-                        // Restore scroll position after loading is complete
-                        restoreScrollPosition();
-                      }, fadeOutDuration);
-                    } else {
-                      // If no loading overlay, restore immediately
-                      restoreScrollPosition();
-                    }
-                  }, remainingTime);
-                }
-                
-                // Wait for both DOM complete and images loaded
-                if (document.readyState === 'complete') {
-                  // Also wait for any images to finish loading
-                  const images = document.images;
-                  let loadedImages = 0;
-                  const totalImages = images.length;
-                  
-                  if (totalImages === 0) {
-                    doHide();
-                    return;
-                  }
-                  
-                  function checkImagesLoaded() {
-                    loadedImages++;
-                    if (loadedImages >= totalImages) {
-                      doHide();
-                    }
-                  }
-                  
-                  // Set up image load listeners
-                  for (let i = 0; i < totalImages; i++) {
-                    if (images[i].complete) {
-                      checkImagesLoaded();
-                    } else {
-                      images[i].addEventListener('load', checkImagesLoaded);
-                      images[i].addEventListener('error', checkImagesLoaded); // Count errors as loaded
-                    }
-                  }
-                } else {
-                  doHide();
-                }
-              }
-              
-              // Save scroll position on page unload
+            }
+            
+            // Event listeners
+            if (typeof window !== 'undefined') {
               window.addEventListener('beforeunload', saveScrollPosition);
               
-              // Also save periodically while scrolling (debounced)
-              let scrollTimeout;
-              window.addEventListener('scroll', () => {
-                clearTimeout(scrollTimeout);
-                scrollTimeout = setTimeout(saveScrollPosition, 100);
+              // Restore scroll position after page loads
+              window.addEventListener('load', () => {
+                setTimeout(restoreScrollPosition, 100);
               });
               
-              if (document.readyState === 'complete') {
-                hideLoadingOverlay();
-              } else {
-                window.addEventListener('load', hideLoadingOverlay);
-              }
-              
-              document.title = 'Davis Tree Service';
+              // Remove no-js class
+              document.documentElement.classList.remove('no-js');
             }
-          } catch (e) {
-            console.error('Error in initialization script:', e);
-            const overlay = document.getElementById('loading-overlay');
-            if (overlay) overlay.classList.add('hidden');
-          }
+          })();
         `,
           }}
         />

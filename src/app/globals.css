@@ -35,63 +35,22 @@
   background-position: 0 0, 0 4px, 4px -4px, -4px 0px;
 }
 
-/* Loading overlay styles */
-.loading-overlay {
+/* Simple FOUC Prevention - Only hide content if JavaScript is disabled */
+.no-js body {
+  visibility: hidden;
+}
+
+.no-js body::after {
+  content: "Please enable JavaScript to view this website.";
+  display: block;
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: var(--loading-bg-color, #ffffff);
-  z-index: 9999;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  transition: opacity var(--loading-fade-duration, 500ms) ease-out;
-}
-
-.loading-overlay.hidden {
-  opacity: 0;
-  pointer-events: none;
-}
-
-/* Hide all content until JavaScript removes the no-js class */
-.no-js .site-content {
-  display: none;
-}
-
-/* Spinner animation */
-.spinner {
-  width: var(--spinner-size, 60px);
-  height: var(--spinner-size, 60px);
-  margin: 24px auto;
-  border-radius: 50%;
-  border: var(--spinner-thickness, 4px) solid transparent;
-  border-top-color: var(--spinner-color, #1d4ed8);
-  border-bottom-color: var(--spinner-color, #1d4ed8);
-  animation: spin 1.2s linear infinite;
-  display: var(--spinner-display, block);
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-/* Logo container */
-.logo-container {
-  max-width: var(--logo-width, 280px);
-  margin-bottom: 20px;
-}
-
-.logo-container img {
-  width: 100%;
-  height: auto;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #e68bbe;
+  font-family: "Ubuntu", system-ui, sans-serif;
+  font-size: 1.2rem;
+  text-align: center;
 }
 
 /* Additional cursor override for desktop */

@@ -30,27 +30,38 @@ export default function ReviewsPage() {
   const servicesConfig = localConfig.pages.Services;
 
   useEffect(() => {
-    async function fetchReviews() {
-      try {
-        setLoading(true);
-        const response = await fetch(
-          `/api/reviews?page=${page}&pageSize=${pageSize}`
-        );
-        if (!response.ok) {
-          throw new Error("Failed to fetch reviews");
-        }
-        const data: ReviewsResponse = await response.json();
-        setReviews(data.reviews);
-        setTotalReviews(data.total_reviews);
-      } catch (error) {
-        console.error("Error fetching reviews:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
+    // Temporarily use config reviews instead of API
+    setLoading(true);
 
-    fetchReviews();
-  }, [page]);
+    // Use nail salon reviews from config
+    const configReviews =
+      reviewsConfig.defaultReviews ||
+      localConfig.pages.Home?.reviewsSection?.defaultReviews ||
+      [];
+
+    // Transform config reviews to match API format
+    const transformedReviews = configReviews.map(
+      (review: any, index: number) => ({
+        id: String(index + 1),
+        author_name: review.author,
+        text: review.text,
+        rating: review.rating,
+        relative_time_description: "2 months ago",
+        profile_photo_url: `https://placehold.co/40x40/${
+          reviewsConfig.heroBadgeTextColor?.replace("#", "") || "ffffff"
+        }/ffffff?text=${review.author.charAt(0)}`,
+        created_at: new Date().toISOString(),
+        is_local_guide: false,
+        review_count: 0,
+        photo_count: 0,
+        time: Date.now().toString(),
+      })
+    );
+
+    setReviews(transformedReviews.slice(0, pageSize));
+    setTotalReviews(configReviews.length);
+    setLoading(false);
+  }, [page, reviewsConfig]);
 
   const totalPages = Math.ceil(totalReviews / pageSize);
 

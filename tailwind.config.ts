@@ -37,9 +37,9 @@ const config: Config = {
         },
       },
       fontFamily: {
-        sans: ["var(--font-space-grotesk)"],
-        display: ["var(--font-space-grotesk)"],
-        montserrat: ["var(--font-montserrat)"],
+        sans: ["var(--font-ubuntu)", "Ubuntu", "sans-serif"],
+        display: ["var(--font-ubuntu)", "Ubuntu", "sans-serif"],
+        ubuntu: ["var(--font-ubuntu)", "Ubuntu", "sans-serif"],
       },
       boxShadow: {
         sharp: "5px 5px 0px 0px rgba(37,99,235,1)",

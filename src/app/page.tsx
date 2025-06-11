@@ -2,6 +2,7 @@
 
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import Link from "next/link";
 import {
   StarIcon,
   ClockIcon,
@@ -94,33 +95,12 @@ export default function Home() {
     }
   }, [isClient, loadingConfig.enabled]);
 
-  // Fetch reviews from API
+  // Temporarily disable API reviews and use config reviews
   useEffect(() => {
-    async function fetchReviews() {
-      try {
-        const response = await fetch("/api/reviews?page=1&pageSize=3");
-        if (!response.ok) {
-          throw new Error("Failed to fetch reviews");
-        }
-        const data = await response.json();
-
-        // Transform the data to match the expected format
-        const formattedReviews = data.reviews.map((review: any) => ({
-          text: review.text,
-          author: review.author_name,
-          rating: review.rating,
-        }));
-
-        setApiReviews(formattedReviews);
-        setReviewsLoaded(true);
-      } catch (error) {
-        console.error("Error fetching reviews for homepage:", error);
-        setReviewsLoaded(true); // Still mark as loaded so fallbacks can display
-      }
-    }
-
     if (isClient) {
-      fetchReviews();
+      // Force use of config reviews instead of API
+      setApiReviews([]);
+      setReviewsLoaded(true);
     }
   }, [isClient]);
 
@@ -1421,7 +1401,8 @@ export default function Home() {
                   </div>
                 ))}
               </>
-            ) : isClient && reviewsLoaded && apiReviews.length > 0 ? (
+            ) : false ? (
+              // Disabled API reviews - use config reviews instead
               apiReviews.map(
                 (
                   review: { text: string; author: string; rating: number },
@@ -1512,112 +1493,96 @@ export default function Home() {
               )
             ) : (
               <>
-                {(
-                  home.reviewsSection?.defaultReviews || [
-                    {
-                      text: "Absolutely phenomenal work! My car looks even better than before the accident. The attention to detail and craftsmanship is top-notch. I highly recommend their services.",
-                      author: "Jennifer R.",
-                      rating: 5,
-                    },
-                    {
-                      text: "Fast, professional service from start to finish. They handled my insurance claim seamlessly and kept me updated throughout the entire repair process. Couldn't be happier with the results!",
-                      author: "Michael S.",
-                      rating: 5,
-                    },
-                    {
-                      text: "The team truly went above and beyond my expectations. Not only was my car repaired perfectly, but they also detailed it before returning it to me. Excellent customer service and quality work.",
-                      author: "David W.",
-                      rating: 5,
-                    },
-                  ]
-                ).map(
-                  (
-                    review: { text: string; author: string; rating: number },
-                    index: number
-                  ) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      className="group relative backdrop-blur-sm rounded-xl p-6 border transition-all duration-200"
-                      style={
-                        {
-                          background:
-                            home.reviewsSection?.reviewCardBgColor ||
-                            "rgba(255, 255, 255, 0.1)",
-                          borderColor:
-                            home.reviewsSection?.reviewCardBorderColor ||
-                            "rgba(255, 255, 255, 0.2)",
-                          "--hover-border-color":
+                {home.reviewsSection?.defaultReviews
+                  ?.slice(0, 3)
+                  .map(
+                    (
+                      review: { text: string; author: string; rating: number },
+                      index: number
+                    ) => (
+                      <motion.div
+                        key={index}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        className="group relative backdrop-blur-sm rounded-xl p-6 border transition-all duration-200"
+                        style={
+                          {
+                            background:
+                              home.reviewsSection?.reviewCardBgColor ||
+                              "rgba(255, 255, 255, 0.1)",
+                            borderColor:
+                              home.reviewsSection?.reviewCardBorderColor ||
+                              "rgba(255, 255, 255, 0.2)",
+                            "--hover-border-color":
+                              home.reviewsSection?.reviewCardHoverBorderColor ||
+                              "rgba(255, 255, 255, 0.3)",
+                          } as React.CSSProperties
+                        }
+                        onMouseOver={(e) => {
+                          e.currentTarget.style.borderColor =
                             home.reviewsSection?.reviewCardHoverBorderColor ||
-                            "rgba(255, 255, 255, 0.3)",
-                        } as React.CSSProperties
-                      }
-                      onMouseOver={(e) => {
-                        e.currentTarget.style.borderColor =
-                          home.reviewsSection?.reviewCardHoverBorderColor ||
-                          "rgba(255, 255, 255, 0.3)";
-                      }}
-                      onMouseOut={(e) => {
-                        e.currentTarget.style.borderColor =
-                          home.reviewsSection?.reviewCardBorderColor ||
-                          "rgba(255, 255, 255, 0.2)";
-                      }}
-                    >
-                      <div className="flex mb-4">
-                        {[...Array(review.rating)].map((_, i) => (
-                          <StarIcon
-                            key={i}
-                            className="h-5 w-5"
-                            style={{
-                              color:
-                                home.reviewsSection?.reviewStarColor ||
-                                "#fbbf24",
-                            }}
-                          />
-                        ))}
-                      </div>
-                      <p
-                        className="mb-6 leading-relaxed"
-                        style={{
-                          color:
-                            home.reviewsSection?.reviewTextColor ||
-                            "rgba(255, 255, 255, 0.9)",
+                            "rgba(255, 255, 255, 0.3)";
+                        }}
+                        onMouseOut={(e) => {
+                          e.currentTarget.style.borderColor =
+                            home.reviewsSection?.reviewCardBorderColor ||
+                            "rgba(255, 255, 255, 0.2)";
                         }}
                       >
-                        "{review.text}"
-                      </p>
-                      <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-400 to-primary-500 flex items-center justify-center text-white font-medium">
-                          {review.author[0]}
+                        <div className="flex mb-4">
+                          {[...Array(review.rating)].map((_, i) => (
+                            <StarIcon
+                              key={i}
+                              className="h-5 w-5"
+                              style={{
+                                color:
+                                  home.reviewsSection?.reviewStarColor ||
+                                  "#fbbf24",
+                              }}
+                            />
+                          ))}
                         </div>
-                        <div>
-                          <p
-                            className="font-medium"
-                            style={{
-                              color:
-                                home.reviewsSection?.reviewAuthorColor ||
-                                "#ffffff",
-                            }}
-                          >
-                            {review.author}
-                          </p>
-                          <p
-                            className="text-sm"
-                            style={{
-                              color:
-                                home.reviewsSection?.reviewVerifiedColor ||
-                                "#93c5fd",
-                            }}
-                          >
-                            Verified Customer
-                          </p>
+                        <p
+                          className="mb-6 leading-relaxed"
+                          style={{
+                            color:
+                              home.reviewsSection?.reviewTextColor ||
+                              "rgba(255, 255, 255, 0.9)",
+                          }}
+                        >
+                          "{review.text}"
+                        </p>
+                        <div className="flex items-center gap-4">
+                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-400 to-primary-500 flex items-center justify-center text-white font-medium">
+                            {review.author[0]}
+                          </div>
+                          <div>
+                            <p
+                              className="font-medium"
+                              style={{
+                                color:
+                                  home.reviewsSection?.reviewAuthorColor ||
+                                  "#ffffff",
+                              }}
+                            >
+                              {review.author}
+                            </p>
+                            <p
+                              className="text-sm"
+                              style={{
+                                color:
+                                  home.reviewsSection?.reviewVerifiedColor ||
+                                  "#93c5fd",
+                              }}
+                            >
+                              Verified Customer
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                    </motion.div>
-                  )
-                )}
+                      </motion.div>
+                    )
+                  )}
               </>
             )}
           </div>
@@ -1651,6 +1616,156 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Contact CTA Section with Shimmering Gradient */}
+      {home.contactSection && (
+        <section
+          className="relative py-20 contact-shimmer-gradient contact-pulse"
+          style={
+            {
+              background: `linear-gradient(135deg, ${home.contactSection.sectionBgGradientFrom}, ${home.contactSection.sectionBgGradientVia}, ${home.contactSection.sectionBgGradientTo})`,
+              "--shimmer-color-1": home.contactSection.shimmerColor1,
+              "--shimmer-color-2": home.contactSection.shimmerColor2,
+              "--shimmer-color-3": home.contactSection.shimmerColor3,
+            } as React.CSSProperties
+          }
+        >
+          {/* Decorative background pattern */}
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage: `radial-gradient(circle at ${home.contactSection.decorativePattern.patternSize} ${home.contactSection.decorativePattern.patternSize}, ${home.contactSection.decorativePattern.patternColor} 1px, transparent 0)`,
+              backgroundSize: `${home.contactSection.decorativePattern.patternSize} ${home.contactSection.decorativePattern.patternSize}`,
+              opacity: home.contactSection.decorativePattern.patternOpacity,
+            }}
+          ></div>
+
+          {/* Floating elements */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <div
+              className="absolute top-10 left-10 w-32 h-32 rounded-full blur-xl opacity-20 animate-float"
+              style={{ backgroundColor: home.contactSection.shimmerColor2 }}
+            ></div>
+            <div
+              className="absolute bottom-10 right-10 w-40 h-40 rounded-full blur-xl opacity-20 animate-float animation-delay-2000"
+              style={{ backgroundColor: home.contactSection.shimmerColor1 }}
+            ></div>
+            <div
+              className="absolute top-1/2 left-1/4 w-24 h-24 rounded-full blur-xl opacity-20 animate-float animation-delay-4000"
+              style={{ backgroundColor: home.contactSection.shimmerColor2 }}
+            ></div>
+          </div>
+
+          <div className="container mx-auto px-4 relative z-10">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              className="text-center"
+            >
+              {/* Sparkle icon */}
+              <motion.div
+                className="flex justify-center mb-6"
+                initial={{ scale: 0 }}
+                whileInView={{ scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.3, duration: 0.5 }}
+              >
+                <div className="relative">
+                  <SparklesIcon
+                    className="w-16 h-16 sparkle-effect"
+                    style={{ color: home.contactSection.pulseIconColor }}
+                  />
+                  <div
+                    className="absolute inset-0 w-16 h-16 rounded-full blur-xl opacity-50 animate-pulse"
+                    style={{
+                      backgroundColor: home.contactSection.shimmerColor2,
+                    }}
+                  ></div>
+                </div>
+              </motion.div>
+
+              {/* Title */}
+              <motion.h2
+                className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6"
+                style={{ color: home.contactSection.titleColor }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.4, duration: 0.6 }}
+              >
+                {home.contactSection.title}
+              </motion.h2>
+
+              {/* Subtitle */}
+              <motion.p
+                className="text-xl md:text-2xl mb-16 max-w-3xl mx-auto leading-relaxed"
+                style={{ color: home.contactSection.subtitleColor }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.5, duration: 0.6 }}
+              >
+                {home.contactSection.subtitle}
+              </motion.p>
+
+              {/* Contact Button */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.6, duration: 0.6 }}
+              >
+                <Link href="/contact" passHref>
+                  <motion.div
+                    className="inline-flex items-center gap-4 px-12 py-6 text-2xl font-bold rounded-2xl transition-all duration-300 transform gradient-button-hover group cursor-pointer"
+                    style={{
+                      backgroundColor: home.contactSection.buttonBgColor,
+                      color: home.contactSection.buttonTextColor,
+                      boxShadow: `0 10px 30px rgba(0, 0, 0, 0.2), 0 0 0 2px ${home.contactSection.shimmerColor2}40`,
+                    }}
+                    whileHover={{
+                      scale: 1.05,
+                      y: -3,
+                      backgroundColor: home.contactSection.buttonHoverBgColor,
+                      color: home.contactSection.buttonHoverTextColor,
+                      boxShadow: `0 15px 40px rgba(0, 0, 0, 0.3), 0 0 0 3px ${home.contactSection.shimmerColor2}60`,
+                    }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <SparklesIcon className="w-8 h-8 group-hover:rotate-12 transition-transform duration-300" />
+                    {home.contactSection.buttonText}
+                    <ArrowRightIcon className="w-8 h-8 group-hover:translate-x-2 transition-transform duration-300" />
+                  </motion.div>
+                </Link>
+              </motion.div>
+
+              {/* Additional shimmer elements */}
+              <div className="mt-8 flex justify-center gap-4">
+                {[...Array(3)].map((_, i) => (
+                  <motion.div
+                    key={i}
+                    className="w-3 h-3 rounded-full opacity-60"
+                    style={{
+                      backgroundColor: home.contactSection.shimmerColor1,
+                    }}
+                    animate={{
+                      scale: [1, 1.5, 1],
+                      opacity: [0.6, 1, 0.6],
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      delay: i * 0.2,
+                    }}
+                  />
+                ))}
+              </div>
+            </motion.div>
+          </div>
+        </section>
+      )}
 
       {/* Footer (no config prop) */}
       <Footer />

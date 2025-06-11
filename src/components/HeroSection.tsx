@@ -430,29 +430,47 @@ export default function HeroSection({
                 iconColor: heroBox3IconColor,
               },
             ].map((item, index) => (
-              <div
+              <motion.div
                 key={index}
-                className="flex items-center gap-3 px-6 py-4 rounded-2xl shadow-xl border backdrop-blur-md transition-all duration-300 w-full sm:w-auto flex-1 mb-4 sm:mb-0"
+                className="flex items-center gap-3 px-6 py-4 rounded-2xl shadow-xl border backdrop-blur-md transition-all duration-300 w-full sm:w-auto flex-1 mb-4 sm:mb-0 hero-card-enhanced luxury-card-gradient-1 glass-effect"
                 style={{
                   background: item.boxBg,
                   borderColor: item.borderColor,
+                  boxShadow:
+                    "0 10px 30px rgba(217, 79, 119, 0.3), 0 4px 20px rgba(248, 187, 217, 0.2)",
+                }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.8 + index * 0.1, duration: 0.6 }}
+                whileHover={{
+                  scale: 1.02,
+                  y: -8,
+                  boxShadow:
+                    "0 20px 40px rgba(217, 79, 119, 0.4), 0 8px 30px rgba(248, 187, 217, 0.3)",
                 }}
               >
                 <div
-                  className="p-2 rounded-xl flex items-center justify-center"
-                  style={{ background: item.iconBg }}
+                  className="p-2 rounded-xl flex items-center justify-center floating-element shadow-lg"
+                  style={{
+                    background: item.iconBg,
+                    backdropFilter: "blur(10px)",
+                    border: `1px solid ${item.borderColor}`,
+                  }}
                 >
                   {React.cloneElement(item.icon, {
                     style: { color: item.iconColor },
                   })}
                 </div>
                 <span
-                  className="font-bold text-base sm:text-lg tracking-wide whitespace-nowrap"
-                  style={{ color: item.textColor }}
+                  className="font-bold text-base sm:text-lg tracking-wide whitespace-nowrap drop-shadow-sm"
+                  style={{
+                    color: item.textColor,
+                    textShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                  }}
                 >
                   {item.text}
                 </span>
-              </div>
+              </motion.div>
             ))}
           </div>
         </motion.div>
