@@ -10,6 +10,7 @@
 - **Automation Copy Script**: ./setup-new-project.sh
 - **NPM Script**: npm run generate-cursor-prompt
 - **🚀 ENHANCED Cursor Project Setup**: npm install node-fetch ------>>> npm run generate-automotive-redesign
+  git remote set-url origin https://github.com/johndoe/rose-nail-template.git
 
 ## 📋 Setup Instructions
 

@@ -25,9 +25,9 @@ export default function ReviewsPage() {
   const pageSize = 6;
 
   // Get reviews config
-  const reviewsConfig = localConfig.pages.Reviews;
+  const reviewsConfig = localConfig.pages?.Reviews || {};
   // Get services config for the CTA section (to maintain consistency)
-  const servicesConfig = localConfig.pages.Services;
+  const servicesConfig = localConfig.pages?.Services || {};
 
   useEffect(() => {
     // Temporarily use config reviews instead of API
@@ -36,7 +36,7 @@ export default function ReviewsPage() {
     // Use nail salon reviews from config
     const configReviews =
       reviewsConfig.defaultReviews ||
-      localConfig.pages.Home?.reviewsSection?.defaultReviews ||
+      localConfig.pages?.Home?.reviewsSection?.defaultReviews ||
       [];
 
     // Transform config reviews to match API format
