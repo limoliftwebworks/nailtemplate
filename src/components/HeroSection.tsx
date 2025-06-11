@@ -432,9 +432,8 @@ export default function HeroSection({
             ].map((item, index) => (
               <motion.div
                 key={index}
-                className="flex items-center gap-3 px-6 py-4 rounded-2xl shadow-xl border backdrop-blur-md transition-all duration-300 w-full sm:w-auto flex-1 mb-4 sm:mb-0 hero-card-enhanced luxury-card-gradient-1 glass-effect"
+                className="flex items-center gap-3 px-6 py-4 rounded-2xl shadow-xl border backdrop-blur-md transition-all duration-300 w-full sm:w-auto flex-1 mb-4 sm:mb-0 hero-card-enhanced hero-card-shimmer glass-effect"
                 style={{
-                  background: item.boxBg,
                   borderColor: item.borderColor,
                   boxShadow:
                     "0 10px 30px rgba(217, 79, 119, 0.3), 0 4px 20px rgba(248, 187, 217, 0.2)",

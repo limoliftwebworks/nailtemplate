@@ -410,3 +410,95 @@ body {
     transform: scale(1);
   }
 }
+
+/* Hero Feature Cards Shimmer Effect */
+.hero-card-shimmer {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(
+    135deg,
+    #fde4f2 0%,
+    #f9cee7 25%,
+    #f4b8da 50%,
+    #eea1cd 75%,
+    #e68bbe 100%
+  );
+  background-size: 400% 400%;
+  animation: heroCardShimmer 4s ease-in-out infinite;
+}
+
+@keyframes heroCardShimmer {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  25% {
+    background-position: 100% 50%;
+  }
+  50% {
+    background-position: 50% 100%;
+  }
+  75% {
+    background-position: 100% 0%;
+  }
+}
+
+/* Shimmer overlay for hero cards */
+.hero-card-shimmer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  animation: heroShimmerPass 3s infinite;
+  z-index: 1;
+}
+
+@keyframes heroShimmerPass {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+/* Enhanced shimmer with multiple layers */
+.hero-card-shimmer::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(253, 228, 242, 0.3) 50%,
+    transparent 70%
+  );
+  animation: heroShimmerDiagonal 2.5s infinite reverse;
+  z-index: 1;
+}
+
+@keyframes heroShimmerDiagonal {
+  0% {
+    transform: translateX(-100%) translateY(-100%);
+  }
+  100% {
+    transform: translateX(100%) translateY(100%);
+  }
+}
+
+/* Ensure content stays above shimmer effects */
+.hero-card-shimmer > * {
+  position: relative;
+  z-index: 2;
+}

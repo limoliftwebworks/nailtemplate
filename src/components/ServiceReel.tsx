@@ -28,66 +28,71 @@ interface Service {
 
 const services: Service[] = [
   {
-    title: "Collision Repair",
-    description: "Expert repair for all types of collision damage",
-    icon: <WrenchScrewdriverIcon className="h-8 w-8" />,
-    priority: true,
-  },
-  {
-    title: "Frame & Alignment",
-    description: "Precision frame straightening and alignment",
-    icon: <ScaleIcon className="h-8 w-8" />,
-    priority: true,
-  },
-  {
-    title: "Paint Services",
-    description: "Professional auto painting and color matching",
-    icon: <PaintBrushIcon className="h-8 w-8" />,
-    priority: true,
-  },
-  {
-    title: "Auto Detailing",
-    description: "Comprehensive interior and exterior detailing",
+    title: "Classic Manicure",
+    description:
+      "Complete nail care with shaping, cuticle treatment, and polish",
     icon: <SparklesIcon className="h-8 w-8" />,
+    priority: true,
   },
   {
-    title: "Insurance Claims",
-    description: "Assistance with insurance claim processing",
-    icon: <ClipboardDocumentCheckIcon className="h-8 w-8" />,
+    title: "Gel Manicure",
+    description:
+      "Long-lasting gel polish that stays chip-free for up to 3 weeks",
+    icon: <SparklesIcon className="h-8 w-8" />,
+    priority: true,
   },
   {
-    title: "Dent Removal",
-    description: "Paintless dent repair and removal",
+    title: "Spa Pedicure",
+    description:
+      "Luxury foot care with exfoliation, mask, and massage treatment",
+    icon: <SparklesIcon className="h-8 w-8" />,
+    priority: true,
+  },
+  {
+    title: "French Manicure",
+    description:
+      "Timeless elegance with classic white tips and natural pink base",
+    icon: <PaintBrushIcon className="h-8 w-8" />,
+  },
+  {
+    title: "Custom Nail Art",
+    description: "Personalized designs created by our skilled nail artists",
+    icon: <PaintBrushIcon className="h-8 w-8" />,
+  },
+  {
+    title: "Acrylic Extensions",
+    description: "Beautiful length and strength with premium acrylic materials",
     icon: <WrenchIcon className="h-8 w-8" />,
   },
   {
-    title: "Quality Assurance",
-    description: "Rigorous quality control inspections",
-    icon: <ShieldCheckIcon className="h-8 w-8" />,
-  },
-  {
-    title: "Towing Service",
-    description: "24/7 emergency towing available",
-    icon: <TruckIcon className="h-8 w-8" />,
-  },
-  {
-    title: "Paint Protection",
-    description: "Advanced paint protection solutions",
+    title: "Chrome & Holographic",
+    description:
+      "Modern mirror finish and holographic effects for stunning nails",
     icon: <BeakerIcon className="h-8 w-8" />,
   },
   {
-    title: "Mechanical Repairs",
-    description: "Complete mechanical repair services",
+    title: "Nail Repair",
+    description: "Professional nail repair and strengthening treatments",
+    icon: <ShieldCheckIcon className="h-8 w-8" />,
+  },
+  {
+    title: "Paraffin Treatment",
+    description: "Moisturizing paraffin wax treatment for soft, smooth hands",
     icon: <CogIcon className="h-8 w-8" />,
   },
   {
-    title: "Color Matching",
-    description: "Precise computerized color matching",
+    title: "Callus Removal",
+    description: "Professional callus and dead skin removal for healthy feet",
+    icon: <WrenchScrewdriverIcon className="h-8 w-8" />,
+  },
+  {
+    title: "Cuticle Care",
+    description: "Expert cuticle trimming and conditioning treatments",
     icon: <SwatchIcon className="h-8 w-8" />,
   },
   {
-    title: "Estimates",
-    description: "Free detailed repair estimates",
+    title: "Nail Consultation",
+    description: "Professional advice on nail health and care routines",
     icon: <DocumentCheckIcon className="h-8 w-8" />,
   },
 ];

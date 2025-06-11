@@ -1,5 +1,5 @@
 // Define the type for the localConfig object
-import { SiteConfig } from './configTypes';
+import { SiteConfig } from "./configTypes";
 
 // Export the LocalConfig interface as an alias for backward compatibility
 export type LocalConfig = SiteConfig;
@@ -106,7 +106,7 @@ const localConfig: LocalConfig = {
   },
   pages: {
     Home: {
-      badge: "Premium Nail Care Services Since 2018",
+      badge: "Premium Nail Care Since 2018",
       heroBadgeColor: "#eea1cd20",
       heroBadgeTitleColor: "#111827",
       title: "Rose Petal Nails in ",
